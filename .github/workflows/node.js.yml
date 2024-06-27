@@ -30,5 +30,11 @@ jobs:
     - run: |
         touch .env
         echo "${{ secrets.ENV }}" > .env
+    - name: Install PM2
+      run: |
+        if ! command -v pm2 &> /dev/null
+        then
+          sudo npm install -g pm2
+        fi
     - run: pm2 restart backend     
     
