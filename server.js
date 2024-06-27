@@ -12,7 +12,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-  res.json({ message: 'Hello ' + process.env.api_key });
+  res.json({ message: 'Hello moshi ' + process.env.api_key });
 });
 
 app.post('/message', (req, res) => {
