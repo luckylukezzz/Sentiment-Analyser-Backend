@@ -30,10 +30,8 @@ jobs:
     - run: |
         touch .env
         echo "${{ secrets.ENV }}" > .env
-    - name: Add directory to PATH
-      run: echo "/home/ubuntu/.local/share/fnm/node-versions/v18.20.3/installation/bin/node" >> $GITHUB_PATH
-    - name: Add directory to PATH
-      run: echo "/home/ubuntu/.local/share/fnm/node-versions/v18.20.3/installation/bin/pm2" >> $GITHUB_PATH
+     - name: Add PM2 to PATH
+        run: echo "::add-path::/home/ubuntu/.local/share/fnm/node-versions/v18.20.3/installation/bin"
     
     - run: pm2 restart backend     
     
