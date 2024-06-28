@@ -6,4 +6,4 @@
 #   "name": "asd"
 # }
 
-GET http://localhost:5000/ HTTP/1.1
+GET https://13.49.67.142 HTTP/1.1
