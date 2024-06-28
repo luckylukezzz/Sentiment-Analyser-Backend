@@ -86,4 +86,101 @@ jobs:
     - run: pm2 restart backend     
     
 ```
+<br>
+check the repo files r there
+<br>
+here the actions-runner-bacendserver is runner name you created<br>
+nodejs-restapi-ec2 is the repo name  (change them as yours)<br>
+<img src="https://github.com/luckylukezzz/nodesv/assets/50476499/9c9b3a4d-891b-4f81-9bb7-c07aec3b2534" alt="Description of the image" width="300"/>
+<br>
 
+## installing nginx, node,pm2 in vps
+
+```sh
+sudo apt update
+curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh
+sudo apt-get install -y nodejs
+node -v
+npm -v
+sudo apt-get install -y nginx
+sudo npm i -g pm2
+```
+## create ssl certificates 
+```sh
+which openssl
+sudo mkdir /etc/nginx/ssl
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/nginx-selfsigned.key -out /etc/nginx/ssl/nginx-selfsigned.crt
+```
+
+## configure nginx
+
+```sh
+cd /etc/nginx/sites-available
+sudo nano default
+
+```
+```sh
+server {
+      listen 80 default_server;
+      listen [::]:80 default_server;
+      server_name _;
+      location / {
+             return 301 https://$host$request_uri;
+      }
+}
+server{
+      listen 443 ssl default_server;
+      listen [::]:443 ssl default_server;
+      server_name _;
+      ssl_certificate /etc/nginx/ssl/nginx-selfsigned.crt;
+      ssl_certificate_key /etc/nginx/ssl/nginx-selfsigned.key;
+
+      ssl_protocols TLSv1.2 TLSv1.3;
+      ssl_prefer_server_ciphers on;
+      ssl_ciphers HIGH:!aNULL:!MD5;
+
+      root /var/www/html;
+location / {
+             rewrite ^\/(.*)$ /$1 break;
+              proxy_pass http://localhost:5000;
+             proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+      }
+}
+                                     
+```
+<br>
+ctrl + x to save <br>
+then enter<br>
+
+```sh
+sudo systemctl restart nginx
+```
+
+## running node server
+In terminal
+go to where server.js is <br>
+runner_path/_work/rep_oname/repo_name  might like this <br>
+
+```sh
+pm2 start server.js --name=backend
+```
+<br>
+In terminal set path for pm2 that github can recognize
+<br>
+
+```sh
+sudo ln -s "$(which pm2)" /usr/bin/pm2
+```
+
+<br>
+now its time to modify yaml file in repo .github/workflows with 
+<br>
+
+```sh
+- run: pm2 restart backend
+```
+
+### deploy frontend with vercel or netlify (change api endpoints in frontend requests to https)
