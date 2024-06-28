@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
 
 app.post('/message', (req, res) => {
   const { name } = req.body;
-  res.json({ message: `Hello, ${name}!` });
+  res.json({ message: `Hellozz, ${name}!` });
 });
 
 app.listen(port, () => {
