@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 
 app.get('/',async(req, res) => {
     try {
-      const response = await axios.get('https://3962-2402-d000-813c-81df-ad80-1f51-49bf-1771.ngrok-free.app/flask');
+      const response = await axios.get('https://604c-2402-d000-813c-81df-ad80-1f51-49bf-1771.ngrok-free.app/flask');
       res.json({ message: 'Hello ' + process.env.api_key +response.data});
   } catch (error) {
       res.status(500).send('Error connecting to Flask app');
