@@ -6,4 +6,4 @@
 #   "name": "asd"
 # }
 
-GET http://13.49.67.142 HTTP/1.1
+GET http://localhost:5000/flask HTTP/1.1
