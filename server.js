@@ -4,6 +4,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
+const axios = require('axios');
+
 const port = 5000;
 
 // Enable CORS
@@ -11,8 +13,13 @@ app.use(cors());
 
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-  res.json({ message: 'Hello ' + process.env.api_key });
+app.get('/', async(req, res) => {
+    try {
+      const response = await axios.get('http://112.134.242.164:5000/your-flask-endpoint');
+      res.json({ message: 'Hello ' + process.env.api_key +response.data});
+  } catch (error) {
+      res.status(500).send('Error connecting to Flask app');
+  }
 });
 
 app.post('/message', (req, res) => {
