@@ -1,33 +1,85 @@
+// const express = require('express');
+// const axios = require('axios');
+// // const bodyParser = require('body-parser');
+// const cors = require('cors');
 
-require('dotenv').config();
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
+// const app = express();
+// const port = 3000;
+
+require("dotenv").config();
+require('express-async-errors');
+
+const connectDB = require("./db/connect");
+const express = require("express");
+const cors = require('cors')
 const app = express();
-const axios = require('axios');
+const mainRouter = require("./routes/user");
 
-const port = 5000;
+app.use(express.json());
 
-// Enable CORS
-app.use(cors());
+app.use(cors())
+app.use("/api/v1", mainRouter);
 
-app.use(bodyParser.json());
+const port = process.env.PORT || 3000;
 
-app.get('/',async(req, res) => {
-    try {
-      const response = await axios.get('https://604c-2402-d000-813c-81df-ad80-1f51-49bf-1771.ngrok-free.app/flask');
-      res.json({ message: 'Hello ' + process.env.api_key +response.data.message});
-  } catch (error) {
-      res.status(500).send('Error connecting to Flask app');
-  }
-  res.json({ message: 'Hello '});
-});
+const start = async () => {
 
-app.post('/message', (req, res) => {
-  const { name } = req.body;
-  res.json({ message: `Hellozz, ${name}!` });
-});
+    try {        
+        await connectDB(process.env.MONGO_URI);
+        app.listen(port, () => {
+            console.log(`Server is listening on port ${port}`);
+        })
 
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+    } catch (error) {
+       console.log(error); 
+    }
+}
+
+start();
+
+
+
+
+
+// // Middleware to parse JSON bodies
+// app.use(bodyParser.json());
+// app.use(cors());
+
+// // Function to get response from Flask app
+// async function getFlaskResponse() {
+//     try {
+//         const response = await axios.get('http://127.0.0.1:5000/');
+//         return response.data;
+//     } catch (error) {
+//         console.error('Error fetching data from Flask app:', error);
+//         return { error: 'Failed to fetch data from Flask app' };
+//     }
+// }
+
+// // Function to post data to Flask app
+// async function postToFlask(data) {
+//     try {
+//         const response = await axios.post('http://127.0.0.1:5000/analytics', data);
+//         return response.data;
+//     } catch (error) {
+//         console.error('Error posting data to Flask app:', error);
+//         return { error: 'Failed to post data to Flask app' };
+//     }
+// }
+
+// // Define the / endpoint
+// app.get('/', async (req, res) => {
+//     const data = await getFlaskResponse();
+//     res.json(data);
+// });
+
+// // Define the /send endpoint for POST requests
+// app.post('/send', async (req, res) => {
+//     const data = req.body;  // Get the JSON data from the request body
+//     const response = await postToFlask(data);
+//     res.json(response);
+// });
+
+// app.listen(port, () => {
+//     console.log(`Server is running on http://localhost:${port}`);
+// });
