@@ -17,7 +17,10 @@ const mainRouter = require("./routes/user");
 
 app.use(express.json());
 
-app.use(cors())
+app.use(cors({
+    origin: 'https://analytica-ten.vercel.app'
+  }));
+  
 app.use("/api/v1", mainRouter);
 
 const port = process.env.PORT || 5000;
