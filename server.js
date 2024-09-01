@@ -1,11 +1,3 @@
-// const express = require('express');
-// const axios = require('axios');
-// // const bodyParser = require('body-parser');
-// const cors = require('cors');
-
-// const app = express();
-// const port = 3000;
-
 require("dotenv").config();
 require('express-async-errors');
 
@@ -13,13 +5,11 @@ const connectDB = require("./db/connect");
 const express = require("express");
 const cors = require('cors')
 const app = express();
-const mainRouter = require("./routes/user");
+const mainRouter = require("./routes/mainRouter");
 
 app.use(express.json());
 
-app.use(cors({
-    origin: 'https://analytica-ten.vercel.app'
-  }));
+app.use(cors());
   
 app.use("/api/v1", mainRouter);
 
