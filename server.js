@@ -1,8 +1,8 @@
 require("dotenv").config();
 require('express-async-errors');
 
-const connectDB = require("./db/connect"); // MongoDB connection
-const mysql = require('mysql2/promise');   // MySQL connection
+const connectDB = require("./db/connect"); 
+const mysql = require('mysql2/promise');   
 const express = require("express");
 const cors = require('cors');
 const app = express();
@@ -16,10 +16,7 @@ app.use(cors());
 let mysqlPool;
 const createMySQLPool = async () => {
     try {
-        console.log(process.env.SQL_HOST)
-        console.log(process.env.SQL_PORT)
-        console.log(process.env.SQL_USER)
-        console.log(process.env.SQL_PASSWORD)
+
         mysqlPool = await mysql.createPool({
             host: process.env.SQL_HOST,
             port: process.env.SQL_PORT,
@@ -58,7 +55,6 @@ const start = async () => {
     try {
       
         await createMySQLPool(); 
-        // Connect to MongoDB
         await connectDB(process.env.MONGO_URI);
         console.log("Connected to MongoDB");
         app.listen(port, () => {
