@@ -16,6 +16,10 @@ app.use(cors());
 let mysqlPool;
 const createMySQLPool = async () => {
     try {
+        console.log(process.env.HOST)
+        console.log(process.env.PORT)
+        console.log(process.env.USER)
+        console.log(process.env.PASSWORD)
         mysqlPool = await mysql.createPool({
             host: process.env.HOST,
             port: process.env.PORT,
