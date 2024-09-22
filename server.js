@@ -16,16 +16,16 @@ app.use(cors());
 let mysqlPool;
 const createMySQLPool = async () => {
     try {
-        console.log(process.env.HOST)
-        console.log(process.env.PORT)
-        console.log(process.env.USER)
-        console.log(process.env.PASSWORD)
+        console.log(process.env.SQL_HOST)
+        console.log(process.env.SQL_PORT)
+        console.log(process.env.SQL_USER)
+        console.log(process.env.SQL_PASSWORD)
         mysqlPool = await mysql.createPool({
-            host: process.env.HOST,
-            port: process.env.PORT,
-            user: process.env.USER,
-            password: process.env.PASSWORD,
-            database: process.env.DATABASE,
+            host: process.env.SQL_HOST,
+            port: process.env.SQL_PORT,
+            user: process.env.SQL_USER,
+            password: process.env.SQL_PASSWORD,
+            database: process.env.SQL_DATABASE,
             ssl: {
                 rejectUnauthorized: false
             },
