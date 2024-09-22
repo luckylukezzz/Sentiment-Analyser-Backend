@@ -36,5 +36,6 @@ jobs:
         echo "USER=${{ secrets.USER }}" >> .env
         echo "PASSWORD=${{ secrets.PASSWORD }}" >> .env
         echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env
+        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
     - run: pm2 restart backend     
     
