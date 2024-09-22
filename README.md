@@ -176,7 +176,7 @@ sudo ln -s "$(which pm2)" /usr/bin/pm2
 ```
 
 <br>
-now its time to modify yaml file in repo .github/workflows with 
+now, its time to modify yaml file in repo .github/workflows with 
 <br>
 
 ```sh
