@@ -5,6 +5,7 @@ const { getLineData } = require('../controllers/line');
 const { getImprovementTips } = require('../controllers/improvement');
 const { getPosTerms, getNegTerms } =require('../controllers/terms');
 const { getTopBlockData } = require('../controllers/topblock')
+const { searchProducts } = require('../controllers/search')
 
 router.route('/emotion-pie').get(getEmotionData);
 router.route('/sentiment-pie').get(getSentimentData);
@@ -13,4 +14,5 @@ router.route('/improvement').get(getImprovementTips);
 router.route('/positive').get(getPosTerms);
 router.route('/negative').get(getNegTerms);
 router.route('/top-block').get(getTopBlockData);
+router.route('/search').get(searchProducts);
 module.exports = router;
