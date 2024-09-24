@@ -16,5 +16,5 @@ router.route('/positive').get(getPosTerms);
 router.route('/negative').get(getNegTerms);
 router.route('/top-block').get(getTopBlockData);
 router.route('/search').get(searchProducts);
-router.route('/limeInfo').get(getLimeInfo);
+router.route('/lime-info').get(getLimeInfo);
 module.exports = router;
