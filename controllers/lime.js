@@ -1,6 +1,6 @@
 const getLimeInfo = async (req, res) => {
     const pool = req.mysqlPool;
-    const parentAsin = req.query.parentAsin;
+    const parentAsin = req.query.asin;
     console.log(parentAsin)
     if (!parentAsin) {
         return res.status(400).json({ error: 'Parent ASIN is required' });
@@ -14,7 +14,6 @@ const getLimeInfo = async (req, res) => {
 
         const newJsonStructure = {};
         reviews.forEach((review, index) => {
-            console.log(review.lime)
             const reviewKey = `review${index + 1}`;
             const limeData = review.lime;
             newJsonStructure[reviewKey] = {
