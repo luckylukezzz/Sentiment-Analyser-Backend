@@ -58,6 +58,8 @@
 
 // module.exports = { getPosTerms, getNegTerms };
 
+const connectDB = require('../db');
+
 const getPosTerms = async (req, res) => {
   const { asin } = req.query;
   console.log("Received ASIN for positive terms:", asin);
@@ -67,8 +69,10 @@ const getPosTerms = async (req, res) => {
   }
 
   try {
+    const connection = await connectDB();
+
     // Query the database for positive keywords
-    const [rows] = await pool.query(
+    const [rows] = await connection.query(
       'SELECT positive_keywords FROM products WHERE parent_asin = ?',
       [asin]
     );
@@ -102,13 +106,16 @@ const getNegTerms = async (req, res) => {
   }
 
   try {
+    const connection = await connectDB();
+
     // Query the database for negative keywords
-    const [rows] = await pool.query(
+    const [rows] = await connection.query(
       'SELECT negative_keywords FROM products WHERE parent_asin = ?',
       [asin]
     );
+    console.log("Rows:", rows);
 
-    if (rows.length === 0) {
+    if (rows.length === 0 || rows[0].negative_keywords === null) {
       return res.status(404).json({ error: "No product found for the given ASIN" });
     }
 
