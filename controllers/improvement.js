@@ -25,9 +25,9 @@ const getImprovementTips = async (req, res) => {
 
   try {
     // Query the database to get improvements for the given ASIN
-    const connection = await connectDB();
+    const pool = req.mysqlPool;
 
-    const [rows] = await connection.query(
+    const [rows] = await pool.query(
       'SELECT improvements FROM products WHERE parent_asin = ?', 
       [asin]
     );

@@ -18,10 +18,11 @@
 //   };
     
 //   module.exports = { getTopBlockData };
-const connectDB = require('../db');
+
   
 const getTopBlockData = async (req, res) => {
     const { asin } = req.query;
+    const pool = req.mysqlPool;
     console.log('Received ASIN sentiment:', asin);
 
     if (!asin) {
@@ -29,9 +30,9 @@ const getTopBlockData = async (req, res) => {
     }
 
     try{
-      const connection = await connectDB();
+      
       // Fetch the start date and end date of reviews for the given ASIN
-      const [reviewPeriodRows] = await connection.query(
+      const [reviewPeriodRows] = await pool.query(
         `SELECT MIN(review_date) AS start_date, MAX(review_date) AS end_date 
          FROM reviews 
          WHERE parent_asin = ?`, 
@@ -39,7 +40,7 @@ const getTopBlockData = async (req, res) => {
       );
 
       // Fetch product details from the products table for the given ASIN
-      const [productDetailsRows] = await connection.query(
+      const [productDetailsRows] = await pool.query(
           `SELECT product_name, main_category, review_count 
           FROM products 
           WHERE parent_asin = ?`, 

@@ -49,7 +49,7 @@
 
 // module.exports = { getSentimentwTime };
 
-const connectDB = require('../db');
+
 
 const getLineData = async (req, res) => {
   const { asin } = req.query;
@@ -60,9 +60,9 @@ const getLineData = async (req, res) => {
   }
 
   try{
-    const connection = await connectDB();
+    const pool = req.mysqlPool;
     // Query the database to get improvements for the given ASIN
-    const [rows] = await connection.query(
+    const [rows] = await pool.query(
       `SELECT 
           YEAR(FROM_UNIXTIME(timestamp / 1000)) AS year,
           AVG(pos_score) * 100 AS avg_positive_score,

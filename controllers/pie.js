@@ -32,10 +32,10 @@ const getEmotionData = async (req, res) => {
     };
 
     try{
-      const connection = await connectDB();
+      const pool = req.mysqlPool;
 
       // Execute the query to get emotion percentages from the database
-      const [rows] = await connection.query(
+      const [rows] = await pool.query(
         `SELECT 
             emotion,
             (COUNT(emotion) / (SELECT COUNT(*) FROM reviews WHERE parent_asin = ?)) * 100 AS emotion_percentage
@@ -84,9 +84,8 @@ const getSentimentData = async (req, res) => {
   }
 
   try{
-    const connection = await connectDB();
-
-    const [rows] = await connection.query(
+    const pool = req.mysqlPool;
+    const [rows] = await pool.query(
       `SELECT 
           SUM(CASE WHEN pos_score >= GREATEST(neu_score, neg_score) THEN 1 ELSE 0 END) * 100 / (SELECT COUNT(*) FROM reviews WHERE parent_asin = ?) AS positive,
           SUM(CASE WHEN neu_score >= GREATEST(pos_score, neg_score) THEN 1 ELSE 0 END) * 100 / (SELECT COUNT(*) FROM reviews WHERE parent_asin = ?) AS neutral,

@@ -58,21 +58,18 @@
 
 // module.exports = { getPosTerms, getNegTerms };
 
-const connectDB = require('../db');
-
 const getPosTerms = async (req, res) => {
   const { asin } = req.query;
   console.log("Received ASIN for positive terms:", asin);
-
+  const pool = req.mysqlPool;
   if (!asin) {
     return res.status(400).json({ error: "ASIN is required" });
   }
 
   try {
-    const connection = await connectDB();
-
+  
     // Query the database for positive keywords
-    const [rows] = await connection.query(
+    const [rows] = await pool.query(
       'SELECT positive_keywords FROM products WHERE parent_asin = ?',
       [asin]
     );
@@ -99,6 +96,7 @@ const getPosTerms = async (req, res) => {
 
 const getNegTerms = async (req, res) => {
   const { asin } = req.query;
+  const pool = req.mysqlPool;
   console.log("Received ASIN for negative terms:", asin);
 
   if (!asin) {
@@ -106,10 +104,10 @@ const getNegTerms = async (req, res) => {
   }
 
   try {
-    const connection = await connectDB();
+    
 
     // Query the database for negative keywords
-    const [rows] = await connection.query(
+    const [rows] = await pool.query(
       'SELECT negative_keywords FROM products WHERE parent_asin = ?',
       [asin]
     );
