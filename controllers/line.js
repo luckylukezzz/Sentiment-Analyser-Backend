@@ -15,6 +15,7 @@ const getSentimentwTime = async (req, res) => {
             CASE 
             WHEN pos_score > neg_score THEN 'Positive'
             WHEN pos_score < neg_score THEN 'Negative'
+            WHEN neu_score > pos_score AND neg_score THEN 'Neutral'
             ELSE 'Neutral'
             END AS sentiment_classification
             FROM reviews
@@ -29,7 +30,8 @@ const getSentimentwTime = async (req, res) => {
             SELECT
             four_month_group,
             COUNT(CASE WHEN sentiment_classification = 'Positive' THEN 1 END) / COUNT(*) AS positive_percentage,
-            COUNT(CASE WHEN sentiment_classification = 'Negative' THEN 1 END) / COUNT(*) AS negative_percentage
+            COUNT(CASE WHEN sentiment_classification = 'Negative' THEN 1 END) / COUNT(*) AS negative_percentage,
+            COUNT(CASE WHEN sentiment_classification = 'Neutral' THEN 1 END) / COUNT(*) AS neutral_percentage
             FROM FourMonthGroups
             GROUP BY four_month_group;`,
             [asin]
