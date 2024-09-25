@@ -1,3 +1,5 @@
+const connectDB = require('../db');
+
 const getImprovementTips = async (req, res) => {
   const { asin } = req.query;
   console.log("Received ASIN for improvement:", asin);
@@ -23,7 +25,9 @@ const getImprovementTips = async (req, res) => {
 
   try {
     // Query the database to get improvements for the given ASIN
-    const [rows] = await pool.query(
+    const connection = await connectDB();
+
+    const [rows] = await connection.query(
       'SELECT improvements FROM products WHERE parent_asin = ?', 
       [asin]
     );

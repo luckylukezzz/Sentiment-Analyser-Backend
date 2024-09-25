@@ -1,3 +1,5 @@
+const connectDB = require('../db'); 
+
 const getEmotionData = async (req, res) => {
     const { asin } = req.query;
     console.log('Received ASIN for emote:', asin);
@@ -30,8 +32,10 @@ const getEmotionData = async (req, res) => {
     };
 
     try{
+      const connection = await connectDB();
+
       // Execute the query to get emotion percentages from the database
-      const [rows] = await pool.query(
+      const [rows] = await connection.query(
         `SELECT 
             emotion,
             (COUNT(emotion) / (SELECT COUNT(*) FROM reviews WHERE parent_asin = ?)) * 100 AS emotion_percentage
@@ -44,15 +48,22 @@ const getEmotionData = async (req, res) => {
         [asin, asin]
       );
 
-      // Format the data to match the pie chart structure with random colors
+      console.log('Rows:', rows);
+
       const pieChartData = rows.map(row => {
+        // Parse the emotion_percentage to a float
+        const emotionPercentage = parseFloat(row.emotion_percentage);
+
+        // Ensure it’s a valid number; if not, default to 0
+        const validPercentage = isNaN(emotionPercentage) ? 0 : emotionPercentage;
+
         return {
-            x: row.emotion,
-            y: row.emotion_percentage,
-            text: `${row.emotion_percentage.toFixed(2)}%`,  // Formatting percentage with 2 decimals
-            color: getRandomColor()  // Generate random color
+            x: row.emotion, // Emotion name
+            y: validPercentage, // Parsed percentage
+            text: `${validPercentage.toFixed(2)}%`, // Format percentage with 2 decimals
+            color: getRandomColor() // Generate random color
         };
-      });
+    });
 
       console.log('Sent response for ASIN:', asin);
       return res.status(200).json(pieChartData); // Return the pie chart data
@@ -73,7 +84,9 @@ const getSentimentData = async (req, res) => {
   }
 
   try{
-    const [rows] = await pool.query(
+    const connection = await connectDB();
+
+    const [rows] = await connection.query(
       `SELECT 
           SUM(CASE WHEN pos_score >= GREATEST(neu_score, neg_score) THEN 1 ELSE 0 END) * 100 / (SELECT COUNT(*) FROM reviews WHERE parent_asin = ?) AS positive,
           SUM(CASE WHEN neu_score >= GREATEST(pos_score, neg_score) THEN 1 ELSE 0 END) * 100 / (SELECT COUNT(*) FROM reviews WHERE parent_asin = ?) AS neutral,
@@ -86,11 +99,27 @@ const getSentimentData = async (req, res) => {
     // Extract data from the query result
     const { positive, neutral, negative } = rows[0];
 
+    console.log('Rows:', rows);
+    console.log('Positive:', positive);
+    
+    // // Prepare pie chart data with the sentiment percentages
+    // const pieChartData = [
+    //   { x: 'Positive', y: positive, text: `${positive.toFixed(2)}%`, color: '#00bdae' },  // Soft Green
+    //   { x: 'Neutral', y: neutral, text: `${neutral.toFixed(2)}%`, color: '#357cd2' },    // Soft Grey/Blue
+    //   { x: 'Negative', y: negative, text: `${negative.toFixed(2)}%`, color: '#FF8A80' },  // Soft Red
+    // ];
+
+    // Function to safely parse sentiment values
+    const parseSentiment = (value) => {
+      const parsedValue = parseFloat(value);
+      return isNaN(parsedValue) ? 0 : parsedValue; // Return 0 if value is not a number
+    };
+
     // Prepare pie chart data with the sentiment percentages
     const pieChartData = [
-      { x: 'Positive', y: positive, text: `${positive.toFixed(2)}%`, color: '#00bdae' },  // Soft Green
-      { x: 'Neutral', y: neutral, text: `${neutral.toFixed(2)}%`, color: '#357cd2' },    // Soft Grey/Blue
-      { x: 'Negative', y: negative, text: `${negative.toFixed(2)}%`, color: '#FF8A80' },  // Soft Red
+      { x: 'Positive', y: parseSentiment(positive), text: `${parseSentiment(positive).toFixed(2)}%`, color: '#00bdae' },  // Soft Green
+      { x: 'Neutral', y: parseSentiment(neutral), text: `${parseSentiment(neutral).toFixed(2)}%`, color: '#357cd2' },    // Soft Grey/Blue
+      { x: 'Negative', y: parseSentiment(negative), text: `${parseSentiment(negative).toFixed(2)}%`, color: '#FF8A80' },  // Soft Red
     ];
 
     console.log('Sent response for ASIN:', asin);
