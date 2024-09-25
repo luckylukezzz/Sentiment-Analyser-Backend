@@ -7,7 +7,7 @@ const getSentimentwTime = async (req, res) => {
     }
 
     try {
-        // Query the database to get improvements for the given ASIN
+        // Query the database to get sentiment data grouped by four-month periods
         const [rows] = await pool.query(
             `WITH ClassifiedReviews AS (
             SELECT 
@@ -16,7 +16,6 @@ const getSentimentwTime = async (req, res) => {
                 WHEN pos_score > neg_score AND pos_score > neu_score THEN 'Positive'
                 WHEN neg_score > pos_score AND neg_score > neu_score THEN 'Negative'
                 ELSE 'Neutral'
-            ELSE 'Neutral'
             END AS sentiment_classification
             FROM reviews
             WHERE parent_asin = ? 
@@ -41,8 +40,45 @@ const getSentimentwTime = async (req, res) => {
             return res.status(404).json({ error: "No product found for the given ASIN" });
         }
 
-        // Return the result as JSON
-        res.json(rows);
+        // Transform the query result into chart-friendly format
+        const positiveSeries = {
+            name: "Positive",
+            dataSource: rows.map(row => ({
+                xName: row.four_month_group,
+                yName: row.positive_percentage * 100  // Convert to percentage
+            })),
+            type: "Line",
+            fill: "#4CAF50",  // Green for positive
+            width: 2,
+            marker: { visible: true }
+        };
+
+        const negativeSeries = {
+            name: "Negative",
+            dataSource: rows.map(row => ({
+                xName: row.four_month_group,
+                yName: row.negative_percentage * 100  // Convert to percentage
+            })),
+            type: "Line",
+            fill: "#F44336",  // Red for negative
+            width: 2,
+            marker: { visible: true }
+        };
+
+        const neutralSeries = {
+            name: "Neutral",
+            dataSource: rows.map(row => ({
+                xName: row.four_month_group,
+                yName: row.neutral_percentage * 100  // Convert to percentage
+            })),
+            type: "Line",
+            fill: "#FFC107",  // Yellow for neutral
+            width: 2,
+            marker: { visible: true }
+        };
+
+        // Send the transformed data to the frontend
+        res.json([positiveSeries, negativeSeries, neutralSeries]);
     } catch (error) {
         console.error('Error fetching sentiment data:', error);
         res.status(500).json({ error: 'Internal server error' });
