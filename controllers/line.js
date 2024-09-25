@@ -12,10 +12,10 @@ const getSentimentwTime = async (req, res) => {
             `WITH ClassifiedReviews AS (
             SELECT 
             *,
-            CASE 
-            WHEN pos_score > neg_score THEN 'Positive'
-            WHEN pos_score < neg_score THEN 'Negative'
-            WHEN neu_score > pos_score AND neg_score THEN 'Neutral'
+            CASE
+                WHEN pos_score > neg_score AND pos_score > neu_score THEN 'Positive'
+                WHEN neg_score > pos_score AND neg_score > neu_score THEN 'Negative'
+                ELSE 'Neutral'
             ELSE 'Neutral'
             END AS sentiment_classification
             FROM reviews
