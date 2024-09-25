@@ -1,4 +1,3 @@
-const connectDB = require('../db');
 
 const getImprovementTips = async (req, res) => {
   const { asin } = req.query;
