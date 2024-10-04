@@ -29,6 +29,13 @@ jobs:
     - run: npm ci
     - run: |
         touch .env
-        echo "${{ secrets.ENV }}" > .env
+        echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> .env
+        echo "SQL_HOST=${{ secrets.HOST }}" >> .env
+        echo "SQL_PORT=${{ secrets.PORT }}" >> .env
+        echo "SQL_DATABASE=${{ secrets.DATABASE }}" >> .env
+        echo "SQL_USER=${{ secrets.USER }}" >> .env
+        echo "SQL_PASSWORD=${{ secrets.PASSWORD }}" >> .env
+        echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env
+        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
     - run: pm2 restart backend     
     
