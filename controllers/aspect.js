@@ -11,7 +11,6 @@ getAspectInfo = async (req, res) => {
     const pool = req.mysqlPool;
 
     try {
-      // Await the query and get the correct part of the result
       const [rows] = await pool.query(
         `
         SELECT 
@@ -97,7 +96,7 @@ getAspectInfo = async (req, res) => {
         }
       });
 
-      // Helper function to calculate the weighted average sentiment score
+      // Helper function to calculate weighted sentiment
       const calculateWeightedSentiment = (positiveScores, neutralScores, negativeScores) => {
         const totalPositive = positiveScores.reduce((sum, val) => sum + val, 0);
         const totalNeutral = neutralScores.reduce((sum, val) => sum + val, 0);
@@ -105,9 +104,8 @@ getAspectInfo = async (req, res) => {
 
         const totalScores = totalPositive + totalNeutral + totalNegative;
 
-        if (totalScores === 0) return 0; // If no reviews, return neutral sentiment
+        if (totalScores === 0) return 0;
 
-        // Apply weighted average: +1 for Positive, 0 for Neutral, -1 for Negative
         const weightedSentiment = (
           (totalPositive * 1) + 
           (totalNeutral * 0) + 
@@ -117,17 +115,62 @@ getAspectInfo = async (req, res) => {
         return weightedSentiment;
       };
 
-      // Calculate the weighted sentiment for each aspect
-      const result = {
-        quality_sentiment: calculateWeightedSentiment(positive_aspect_quality, neutral_aspect_quality, negative_aspect_quality),
-        price_sentiment: calculateWeightedSentiment(positive_aspect_price, neutral_aspect_price, negative_aspect_price),
-        shipping_sentiment: calculateWeightedSentiment(positive_aspect_shipping, neutral_aspect_shipping, negative_aspect_shipping),
-        customer_service_sentiment: calculateWeightedSentiment(positive_aspect_customer_service, neutral_aspect_customer_service, negative_aspect_customer_service),
-        warranty_sentiment: calculateWeightedSentiment(positive_aspect_warranty, neutral_aspect_warranty, negative_aspect_warranty)
+      const classifySentiment = (score) => {
+        if (score >= 0.3) return 'Positive';
+        if (score <= -0.3) return 'Negative';
+        return 'Neutral';
       };
 
-      // Return the averages
-      return res.status(200).json(result);
+      // Calculate sentiment and format into the required structure
+      const aspectList = [
+        {
+          icon: 'BiSolidCrown',  // Send icon name as a string
+          score: calculateWeightedSentiment(positive_aspect_quality, neutral_aspect_quality, negative_aspect_quality).toFixed(2),
+          title: 'Quality',
+          sentiment: classifySentiment(calculateWeightedSentiment(positive_aspect_quality, neutral_aspect_quality, negative_aspect_quality)),
+          iconColor: '#03C9D7',
+          iconBg: '#E5FAFB',
+          pcColor: classifySentiment(calculateWeightedSentiment(positive_aspect_quality, neutral_aspect_quality, negative_aspect_quality)) === 'Positive' ? 'green-600' : 'red-600',
+        },
+        {
+          icon: 'BsCurrencyDollar',  // Send icon name as a string
+          score: calculateWeightedSentiment(positive_aspect_price, neutral_aspect_price, negative_aspect_price).toFixed(2),
+          title: 'Price',
+          sentiment: classifySentiment(calculateWeightedSentiment(positive_aspect_price, neutral_aspect_price, negative_aspect_price)),
+          iconColor: 'rgb(0, 194, 146)',
+          iconBg: 'rgb(235, 250, 242)',
+          pcColor: classifySentiment(calculateWeightedSentiment(positive_aspect_price, neutral_aspect_price, negative_aspect_price)) === 'Positive' ? 'green-600' : 'red-600',
+        },
+        {
+          icon: 'TbTruckDelivery',  // Send icon name as a string
+          score: calculateWeightedSentiment(positive_aspect_shipping, neutral_aspect_shipping, negative_aspect_shipping).toFixed(2),
+          title: 'Shipping',
+          sentiment: classifySentiment(calculateWeightedSentiment(positive_aspect_shipping, neutral_aspect_shipping, negative_aspect_shipping)),
+          iconColor: 'rgb(255, 244, 229)',
+          iconBg: 'rgb(254, 201, 15)',
+          pcColor: classifySentiment(calculateWeightedSentiment(positive_aspect_shipping, neutral_aspect_shipping, negative_aspect_shipping)) === 'Positive' ? 'green-600' : 'red-600',
+        },
+        {
+          icon: 'FcCustomerSupport',  // Send icon name as a string
+          score: calculateWeightedSentiment(positive_aspect_customer_service, neutral_aspect_customer_service, negative_aspect_customer_service).toFixed(2),
+          title: 'Customer Service',
+          sentiment: classifySentiment(calculateWeightedSentiment(positive_aspect_customer_service, neutral_aspect_customer_service, negative_aspect_customer_service)),
+          iconColor: 'rgb(228, 106, 118)',
+          iconBg: 'rgb(255, 244, 229)',
+          pcColor: classifySentiment(calculateWeightedSentiment(positive_aspect_customer_service, neutral_aspect_customer_service, negative_aspect_customer_service)) === 'Positive' ? 'green-600' : 'red-600',
+        },
+        {
+          icon: 'LiaCertificateSolid',  // Send icon name as a string
+          score: calculateWeightedSentiment(positive_aspect_warranty, neutral_aspect_warranty, negative_aspect_warranty).toFixed(2),
+          title: 'Warranty',
+          sentiment: classifySentiment(calculateWeightedSentiment(positive_aspect_warranty, neutral_aspect_warranty, negative_aspect_warranty)),
+          iconColor: '#03C9D7',
+          iconBg: '#E5FAFB',
+          pcColor: classifySentiment(calculateWeightedSentiment(positive_aspect_warranty, neutral_aspect_warranty, negative_aspect_warranty)) === 'Positive' ? 'green-600' : 'red-600',
+        },
+      ];
+
+      return res.status(200).json(aspectList);
 
     } catch (err) {
       console.error("Error fetching aspect data:", err);
