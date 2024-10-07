@@ -116,8 +116,8 @@ getAspectInfo = async (req, res) => {
       };
 
       const classifySentiment = (score) => {
-        if (score >= 0.3) return 'Positive';
-        if (score <= -0.3) return 'Negative';
+        if (score >= 0.25) return 'Positive';
+        if (score <= -0.25) return 'Negative';
         return 'Neutral';
       };
 
