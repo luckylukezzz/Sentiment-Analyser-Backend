@@ -54,6 +54,10 @@ To get started with the Frontend, follow these steps :
 3. Start the Backend Server using following command.
 > npm start
 
+### Deployment Process
+
+- For Deployment of CI/CD pipeline process see [Deployment Process](https://github.com/luckylukezzz/Sentiment-Analyser-Backend/blob/main/DeplymentProcess.md).
+
 ### Contributing
 
 We welcome contributions to enhance the functionality and efficiency of our system!.
