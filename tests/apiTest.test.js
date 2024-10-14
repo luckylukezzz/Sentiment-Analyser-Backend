@@ -1,13 +1,16 @@
-// tests/apiTest.test.js
 const request = require('supertest');
-const { app, createMySQLPool } = require('../app'); // Import the app for testing
+const { app, createMySQLPool, closeMySQLPool } = require('../app');
 
-describe('GET /api/v1/dashboard/improvement?asin=B004YRBM1Q', () => {
+describe('GET /api/v1/dashboard/improvement', () => {
     beforeAll(async () => {
-        await createMySQLPool(); // Ensure MySQL pool is created before tests
+        await createMySQLPool();
     });
 
-    it('should return all users', async () => {
+    afterAll(async () => {
+        await closeMySQLPool();
+    });
+
+    it('should return improvement data for a given ASIN', async () => {
         const res = await request(app)
             .get('/api/v1/dashboard/improvement?asin=B004YRBM1Q')
             .expect(200);

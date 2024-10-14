@@ -1,57 +1,48 @@
 name: Node.js Test Workflow
 
-# Trigger the workflow on pull requests and pushes to the "main" branch
 on:
   pull_request:
     branches: [ "main" ]
 
 jobs:
   test:
-    # Use Ubuntu as the runner
     runs-on: ubuntu-latest
-
-    # Specify the versions of Node.js you want to test with
+    
     strategy:
       matrix:
         node-version: [18.x]
-
+    
     steps:
-      # Step 1: Checkout the repository code
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      # Step 2: Set up Node.js based on the specified version
-      - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-
-      # Step 3: Install dependencies
-      - name: Install dependencies
-        run: npm ci
-
-      # Step 4: Set environment variables from secrets
-      - name: Set environment variables
-        run: |
-          touch .env
-          echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> .env
-          echo "SQL_HOST=${{ secrets.HOST }}" >> .env
-          echo "SQL_PORT=${{ secrets.PORT }}" >> .env
-          echo "SQL_DATABASE=${{ secrets.DATABASE }}" >> .env
-          echo "SQL_USER=${{ secrets.USER }}" >> .env
-          echo "SQL_PASSWORD=${{ secrets.PASSWORD }}" >> .env
-          echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-
-      # Step 5: Run the tests
-      - name: Run Tests
-        run: npm test -- --detectOpenHandles  # --detectOpenHandles helps catch open async operations
-
-      # Optional Step: Collect test reports (if using Jest or Mocha for example)
-      - name: Upload Test Results
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-results
-          path: ./test-results/  # You can configure this path based on where your test results are saved.
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Set environment variables
+      run: |
+        touch .env
+        echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> .env
+        echo "SQL_HOST=${{ secrets.HOST }}" >> .env
+        echo "SQL_PORT=${{ secrets.PORT }}" >> .env
+        echo "SQL_DATABASE=${{ secrets.DATABASE }}" >> .env
+        echo "SQL_USER=${{ secrets.USER }}" >> .env
+        echo "SQL_PASSWORD=${{ secrets.PASSWORD }}" >> .env
+        echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env
+        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+    
+    - name: Run Tests
+      run: npm test -- --forceExit
+    
+    - name: Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: ./test-results/

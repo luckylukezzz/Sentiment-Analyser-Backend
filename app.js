@@ -37,6 +37,14 @@ const createMySQLPool = async () => {
     }
 };
 
+
+async function closeMySQLPool() {
+    if (mysqlPool) {
+      await mysqlPool.end();
+      console.log('MySQL pool closed');
+    }
+  }
+
 // Middleware to attach MySQL pool to requests
 app.use((req, res, next) => {
     if (!mysqlPool) {
@@ -49,4 +57,4 @@ app.use((req, res, next) => {
 app.use("/api/v1", mainRouter);
 
 // Export the app and pool function for server and tests
-module.exports = { app, createMySQLPool };
+module.exports = { app, createMySQLPool, closeMySQLPool };
