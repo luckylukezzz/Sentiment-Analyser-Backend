@@ -1,0 +1,48 @@
+name: Node.js Test Workflow
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Set environment variables
+      run: |
+        touch .env
+        echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> .env
+        echo "SQL_HOST=${{ secrets.HOST }}" >> .env
+        echo "SQL_PORT=${{ secrets.PORT }}" >> .env
+        echo "SQL_DATABASE=${{ secrets.DATABASE }}" >> .env
+        echo "SQL_USER=${{ secrets.USER }}" >> .env
+        echo "SQL_PASSWORD=${{ secrets.PASSWORD }}" >> .env
+        echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env
+        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+    
+    - name: Run Tests
+      run: npm test -- --forceExit
+    
+    - name: Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: ./test-results/
