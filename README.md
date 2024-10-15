@@ -54,7 +54,7 @@ To get started with the Frontend, follow these steps :
 2. cd in to the project directory and Install the dependencies using following command.(Activate the Virtual Environment if you are using one. It's recommended to use one.)
 > npm install
 
-3. See [Environment Variables]('https://github.com/luckylukezzz/Sentiment-Analyser-Backend/blob/main/.env_sample') file sample and
+3. See [Environment Variables](https://github.com/luckylukezzz/Sentiment-Analyser-Backend/blob/main/.env_sample) file sample and
 change your `.env`file accordingly
 
 4. Start the Backend Server using following command.
