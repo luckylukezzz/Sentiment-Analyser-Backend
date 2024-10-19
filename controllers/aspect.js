@@ -30,23 +30,23 @@ getAspectInfo = async (req, res) => {
       // Initialize accumulators for each aspect
       let positive_aspect_quality = [];
       let negative_aspect_quality = [];
-      let neutral_aspect_quality = [];
+      //let neutral_aspect_quality = [];
 
       let positive_aspect_price = [];
       let negative_aspect_price = [];
-      let neutral_aspect_price = [];
+      //let neutral_aspect_price = [];
 
       let positive_aspect_shipping = [];
       let negative_aspect_shipping = [];
-      let neutral_aspect_shipping = [];
+      //let neutral_aspect_shipping = [];
 
       let positive_aspect_customer_service = [];
       let negative_aspect_customer_service = [];
-      let neutral_aspect_customer_service = [];
+      //let neutral_aspect_customer_service = [];
 
       let positive_aspect_warranty = [];
       let negative_aspect_warranty = [];
-      let neutral_aspect_warranty = [];
+      //let neutral_aspect_warranty = [];
 
       // Loop through the rows and accumulate scores based on aspect sentiment
       rows.forEach(row => {
@@ -55,8 +55,8 @@ getAspectInfo = async (req, res) => {
           positive_aspect_quality.push(row['quality_score']);
         } else if (row['aspect_quality'] === 'Negative') {
           negative_aspect_quality.push(row['quality_score']);
-        } else if (row['aspect_quality'] === 'Neutral') {
-          neutral_aspect_quality.push(row['quality_score']);
+        // } else if (row['aspect_quality'] === 'Neutral') {
+        //   neutral_aspect_quality.push(row['quality_score']);
         }
 
         // Price
@@ -64,8 +64,8 @@ getAspectInfo = async (req, res) => {
           positive_aspect_price.push(row['price_score']);
         } else if (row['aspect_price'] === 'Negative') {
           negative_aspect_price.push(row['price_score']);
-        } else if (row['aspect_price'] === 'Neutral') {
-          neutral_aspect_price.push(row['price_score']);
+        // } else if (row['aspect_price'] === 'Neutral') {
+        //   neutral_aspect_price.push(row['price_score']);
         }
 
         // Shipping
@@ -73,8 +73,8 @@ getAspectInfo = async (req, res) => {
           positive_aspect_shipping.push(row['shipping_score']);
         } else if (row['aspect_shipping'] === 'Negative') {
           negative_aspect_shipping.push(row['shipping_score']);
-        } else if (row['aspect_shipping'] === 'Neutral') {
-          neutral_aspect_shipping.push(row['shipping_score']);
+        // } else if (row['aspect_shipping'] === 'Neutral') {
+        //   neutral_aspect_shipping.push(row['shipping_score']);
         }
 
         // Customer Service
@@ -82,8 +82,8 @@ getAspectInfo = async (req, res) => {
           positive_aspect_customer_service.push(row['customer_service_score']);
         } else if (row['aspect_customer_service'] === 'Negative') {
           negative_aspect_customer_service.push(row['customer_service_score']);
-        } else if (row['aspect_customer_service'] === 'Neutral') {
-          neutral_aspect_customer_service.push(row['customer_service_score']);
+        // } else if (row['aspect_customer_service'] === 'Neutral') {
+        //   neutral_aspect_customer_service.push(row['customer_service_score']);
         }
 
         // Warranty
@@ -91,24 +91,23 @@ getAspectInfo = async (req, res) => {
           positive_aspect_warranty.push(row['warranty_score']);
         } else if (row['aspect_warranty'] === 'Negative') {
           negative_aspect_warranty.push(row['warranty_score']);
-        } else if (row['aspect_warranty'] === 'Neutral') {
-          neutral_aspect_warranty.push(row['warranty_score']);
+        // } else if (row['aspect_warranty'] === 'Neutral') {
+        //   neutral_aspect_warranty.push(row['warranty_score']);
         }
       });
 
       // Helper function to calculate weighted sentiment
-      const calculateWeightedSentiment = (positiveScores, neutralScores, negativeScores) => {
+      const calculateWeightedSentiment = (positiveScores, negativeScores) => {
         const totalPositive = positiveScores.reduce((sum, val) => sum + val, 0);
-        const totalNeutral = neutralScores.reduce((sum, val) => sum + val, 0);
+        //const totalNeutral = neutralScores.reduce((sum, val) => sum + val, 0);
         const totalNegative = negativeScores.reduce((sum, val) => sum + val, 0);
 
-        const totalScores = totalPositive + totalNeutral + totalNegative;
+        const totalScores = totalPositive + totalNegative;
 
         if (totalScores === 0) return 0;
 
         const weightedSentiment = (
-          (totalPositive * 1) + 
-          (totalNeutral * 0) + 
+          (totalPositive * 1) +  
           (totalNegative * -1)
         ) / totalScores;
 
@@ -116,8 +115,8 @@ getAspectInfo = async (req, res) => {
       };
 
       const classifySentiment = (score) => {
-        if (score >= 0.25) return 'Positive';
-        if (score <= -0.25) return 'Negative';
+        if (score > 0) return 'Positive';
+        if (score <= 0) return 'Negative';
         return 'Neutral';
       };
 
@@ -125,48 +124,48 @@ getAspectInfo = async (req, res) => {
       const aspectList = [
         {
           icon: 'BiSolidCrown',  // Send icon name as a string
-          score: calculateWeightedSentiment(positive_aspect_quality, neutral_aspect_quality, negative_aspect_quality).toFixed(2),
+          score: calculateWeightedSentiment(positive_aspect_quality, negative_aspect_quality).toFixed(2),
           title: 'Quality',
-          sentiment: classifySentiment(calculateWeightedSentiment(positive_aspect_quality, neutral_aspect_quality, negative_aspect_quality)),
+          sentiment: classifySentiment(calculateWeightedSentiment(positive_aspect_quality, negative_aspect_quality)),
           iconColor: '#03C9D7',
           iconBg: '#E5FAFB',
-          pcColor: classifySentiment(calculateWeightedSentiment(positive_aspect_quality, neutral_aspect_quality, negative_aspect_quality)) === 'Positive' ? 'green-600' : 'red-600',
+          pcColor: classifySentiment(calculateWeightedSentiment(positive_aspect_quality, negative_aspect_quality)) === 'Positive' ? 'green-600' : 'red-600',
         },
         {
           icon: 'BsCurrencyDollar',  // Send icon name as a string
-          score: calculateWeightedSentiment(positive_aspect_price, neutral_aspect_price, negative_aspect_price).toFixed(2),
+          score: calculateWeightedSentiment(positive_aspect_price, negative_aspect_price).toFixed(2),
           title: 'Price',
-          sentiment: classifySentiment(calculateWeightedSentiment(positive_aspect_price, neutral_aspect_price, negative_aspect_price)),
+          sentiment: classifySentiment(calculateWeightedSentiment(positive_aspect_price, negative_aspect_price)),
           iconColor: 'rgb(0, 194, 146)',
           iconBg: 'rgb(235, 250, 242)',
-          pcColor: classifySentiment(calculateWeightedSentiment(positive_aspect_price, neutral_aspect_price, negative_aspect_price)) === 'Positive' ? 'green-600' : 'red-600',
+          pcColor: classifySentiment(calculateWeightedSentiment(positive_aspect_price, negative_aspect_price)) === 'Positive' ? 'green-600' : 'red-600',
         },
         {
           icon: 'TbTruckDelivery',  // Send icon name as a string
-          score: calculateWeightedSentiment(positive_aspect_shipping, neutral_aspect_shipping, negative_aspect_shipping).toFixed(2),
+          score: calculateWeightedSentiment(positive_aspect_shipping, negative_aspect_shipping).toFixed(2),
           title: 'Shipping',
-          sentiment: classifySentiment(calculateWeightedSentiment(positive_aspect_shipping, neutral_aspect_shipping, negative_aspect_shipping)),
+          sentiment: classifySentiment(calculateWeightedSentiment(positive_aspect_shipping, negative_aspect_shipping)),
           iconColor: 'rgb(255, 244, 229)',
           iconBg: 'rgb(254, 201, 15)',
-          pcColor: classifySentiment(calculateWeightedSentiment(positive_aspect_shipping, neutral_aspect_shipping, negative_aspect_shipping)) === 'Positive' ? 'green-600' : 'red-600',
+          pcColor: classifySentiment(calculateWeightedSentiment(positive_aspect_shipping, negative_aspect_shipping)) === 'Positive' ? 'green-600' : 'red-600',
         },
         {
           icon: 'FcCustomerSupport',  // Send icon name as a string
-          score: calculateWeightedSentiment(positive_aspect_customer_service, neutral_aspect_customer_service, negative_aspect_customer_service).toFixed(2),
+          score: calculateWeightedSentiment(positive_aspect_customer_service, negative_aspect_customer_service).toFixed(2),
           title: 'Customer Service',
-          sentiment: classifySentiment(calculateWeightedSentiment(positive_aspect_customer_service, neutral_aspect_customer_service, negative_aspect_customer_service)),
+          sentiment: classifySentiment(calculateWeightedSentiment(positive_aspect_customer_service, negative_aspect_customer_service)),
           iconColor: 'rgb(228, 106, 118)',
           iconBg: 'rgb(255, 244, 229)',
-          pcColor: classifySentiment(calculateWeightedSentiment(positive_aspect_customer_service, neutral_aspect_customer_service, negative_aspect_customer_service)) === 'Positive' ? 'green-600' : 'red-600',
+          pcColor: classifySentiment(calculateWeightedSentiment(positive_aspect_customer_service, negative_aspect_customer_service)) === 'Positive' ? 'green-600' : 'red-600',
         },
         {
           icon: 'LiaCertificateSolid',  // Send icon name as a string
-          score: calculateWeightedSentiment(positive_aspect_warranty, neutral_aspect_warranty, negative_aspect_warranty).toFixed(2),
+          score: calculateWeightedSentiment(positive_aspect_warranty, negative_aspect_warranty).toFixed(2),
           title: 'Warranty',
-          sentiment: classifySentiment(calculateWeightedSentiment(positive_aspect_warranty, neutral_aspect_warranty, negative_aspect_warranty)),
+          sentiment: classifySentiment(calculateWeightedSentiment(positive_aspect_warranty, negative_aspect_warranty)),
           iconColor: '#03C9D7',
           iconBg: '#E5FAFB',
-          pcColor: classifySentiment(calculateWeightedSentiment(positive_aspect_warranty, neutral_aspect_warranty, negative_aspect_warranty)) === 'Positive' ? 'green-600' : 'red-600',
+          pcColor: classifySentiment(calculateWeightedSentiment(positive_aspect_warranty, negative_aspect_warranty)) === 'Positive' ? 'green-600' : 'red-600',
         },
       ];
 
