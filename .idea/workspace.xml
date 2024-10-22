@@ -5,8 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="777ef23d-3ce5-4789-b8ea-512d5eec35cc" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/pythonscript.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/pythonExecutor.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/pythonExecutor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,6 +37,9 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Node.js.pythonExecutorTest.js.executor": "Run",
+    "Node.js.pythonExecutorTestTest.js.executor": "Run",
+    "Node.js.pythonExecutorTest_.js.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "Ver4",
     "node.js.detected.package.eslint": "true",
@@ -45,6 +51,20 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RunManager" selected="Node.js.pythonExecutorTestTest.js">
+    <configuration name="pythonExecutorTestTest.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/controllers/pythonExecutorTestTest.js" working-dir="$PROJECT_DIR$/controllers">
+      <method v="2" />
+    </configuration>
+    <configuration name="pythonExecutorTest_.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/controllers/pythonExecutorTest_.js" working-dir="$PROJECT_DIR$/controllers">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Node.js.pythonExecutorTestTest.js" />
+        <item itemvalue="Node.js.pythonExecutorTest_.js" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -67,6 +87,10 @@
       <workItem from="1727160283641" duration="819000" />
       <workItem from="1727248785766" duration="2752000" />
       <workItem from="1728278945953" duration="2748000" />
+      <workItem from="1729490268944" duration="293000" />
+      <workItem from="1729490602468" duration="343000" />
+      <workItem from="1729491477316" duration="18000" />
+      <workItem from="1729626974338" duration="3661000" />
     </task>
     <servers />
   </component>

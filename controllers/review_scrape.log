@@ -1,0 +1,13 @@
+2024-10-23 02:31:25,923:INFO:package: mysql.connector.plugins
+2024-10-23 02:31:25,923:INFO:plugin_name: caching_sha2_password
+2024-10-23 02:31:25,923:INFO:AUTHENTICATION_PLUGIN_CLASS: MySQLCachingSHA2PasswordAuthPlugin
+2024-10-23 02:31:26,363:INFO:Database connection established successfully
+2024-10-23 02:31:30,683:INFO:No reviews found on page 1. Ending scraping.
+2024-10-23 02:31:30,683:INFO:Reviews extracted and saved to reviews.csv
+2024-10-23 02:31:30,683:INFO:Scraping completed. Total reviews added: 0
+2024-10-23 02:31:30,683:INFO:Database connection closed
+2024-10-23 02:31:39,050:INFO:got asing
+2024-10-23 02:31:39,050:INFO:Starting ABSA pipeline
+2024-10-23 02:31:43,526:WARNING:From D:\testingPrograms\Anaconda\envs\MLenv\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+
+2024-10-23 02:32:43,798:INFO:Finished ABSA pipeline
