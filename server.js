@@ -8,7 +8,7 @@ const start = async () => {
     try {
         await createMySQLPool(); // Initialize MySQL pool
         await connectDB(process.env.MONGO_URI); // Connect to MongoDB
-        console.log("Connected to MongoDB");
+        console.log("Connected to MongoDBs");
         
         app.listen(port, () => {
             console.log(`Server is listening on port ${port}`);
